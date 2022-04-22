@@ -10,18 +10,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.arifwidayana.challengechapter5.R
+import com.arifwidayana.challengechapter5.databinding.FragmentSplashScreenBinding
 import com.arifwidayana.challengechapter5.model.utils.Constant
 import com.arifwidayana.challengechapter5.model.utils.SharedHelper
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreen : Fragment() {
-    lateinit var shared: SharedHelper
+    private var bind : FragmentSplashScreenBinding? = null
+    private val binding get() = bind!!
+    private lateinit var shared: SharedHelper
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_splash_screen, container, false)
+    ): View {
+        bind = FragmentSplashScreenBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,6 +37,11 @@ class SplashScreen : Fragment() {
                 else -> findNavController().navigate(R.id.action_splashScreen_to_onBoarding)
             }
         },3000)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        bind = null
     }
 
     private fun onBoardingDone(): Boolean {

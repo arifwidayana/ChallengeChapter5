@@ -36,4 +36,9 @@ class OnBoarding : Fragment() {
 
         binding.vpOnBoarding.adapter = adapterBoard
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        bind = null
+    }
 }

@@ -27,7 +27,7 @@ class ThirdScreen : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         shared = SharedHelper(requireContext())
-        binding.btnLoginPage.setOnClickListener {
+        binding.btnStart.setOnClickListener {
             findNavController().navigate(R.id.action_onBoarding_to_loginFragment)
             onBoarding()
         }
@@ -35,5 +35,10 @@ class ThirdScreen : Fragment() {
 
     private fun onBoarding() {
         shared.put(Constant.FINISHED, true)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        bind = null
     }
 }
