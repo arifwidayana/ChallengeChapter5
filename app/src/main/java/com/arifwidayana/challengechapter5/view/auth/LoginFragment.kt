@@ -1,4 +1,4 @@
-package com.arifwidayana.challengechapter5.view.login
+package com.arifwidayana.challengechapter5.view.auth
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -79,6 +79,11 @@ class LoginFragment : Fragment() {
         if (shared.getBoolean(Constant.LOGIN, false)){
             findNavController().navigate(R.id.action_loginFragment_to_mainHomepageFragment)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        bind = null
     }
 
     private fun loginSession(user: String, pass: String) {

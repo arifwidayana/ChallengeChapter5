@@ -1,4 +1,4 @@
-package com.arifwidayana.challengechapter5.view.login
+package com.arifwidayana.challengechapter5.view.auth
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.arifwidayana.challengechapter5.R
 import com.arifwidayana.challengechapter5.databinding.FragmentRegisterBinding
@@ -13,7 +14,6 @@ import com.arifwidayana.challengechapter5.model.DatabaseStore
 import com.arifwidayana.challengechapter5.model.data.UserEntity
 import kotlinx.coroutines.*
 
-@DelicateCoroutinesApi
 class RegisterFragment : Fragment() {
     private var bind : FragmentRegisterBinding? = null
     private val binding get() = bind!!
@@ -55,21 +55,32 @@ class RegisterFragment : Fragment() {
                             etRegisterPassword.text.toString()
                         )
 
-                        GlobalScope.launch {
-                            dataUser?.userDao()?.insertUser(objDataUser)
-                        }
-
                         CoroutineScope(Dispatchers.Main).launch {
-                            Toast.makeText(
-                                requireContext(),
-                                "Register User Success",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+                            val user = etRegisterUsername.text.toString()
+                            val data = dataUser?.userDao()?.getUsername(user)
+                            when {
+                                data?.username != user -> {
+                                    lifecycleScope.launch(Dispatchers.IO){
+                                        dataUser?.userDao()?.insertUser(objDataUser)
+                                        runBlocking(Dispatchers.Main) {
+                                            Toast.makeText(requireContext(), "Register User Success", Toast.LENGTH_SHORT).show()
+                                            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+                                        }
+                                    }
+                                }
+                                else -> {
+                                    Toast.makeText(requireContext(), "Username has taken", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        bind = null
     }
 }
