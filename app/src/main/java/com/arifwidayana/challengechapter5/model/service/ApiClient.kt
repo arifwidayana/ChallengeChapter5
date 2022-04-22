@@ -1,12 +1,12 @@
 package com.arifwidayana.challengechapter5.model.service
 
+import com.arifwidayana.challengechapter5.model.utils.Constant
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
-    private const val BASE_URL = "https://rent-cars-api.herokuapp.com/"
 
     private val log: HttpLoggingInterceptor
         get() {
@@ -18,11 +18,19 @@ object ApiClient {
 
     private val client = OkHttpClient.Builder()
         .addInterceptor(log)
+        .addInterceptor{
+            val req = it.request()
+            val query = req.url
+                .newBuilder()
+                .addQueryParameter(Constant.API_NAME, Constant.API_KEY)
+                .build()
+            return@addInterceptor it.proceed(req.newBuilder().url(query).build())
+        }
         .build()
 
     val instance: ApiService by lazy {
         val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(Constant.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
